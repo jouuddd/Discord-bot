@@ -9,8 +9,7 @@
   "dependencies": {
     "@discordjs/voice": "^0.16.1",
     "discord.js": "^14.14.1",
-    "sodium-native": "^4.1.1",
-    "libsodium-wrappers": "^1.0.3"
+    "libsodium-wrappers": "^0.7.13"
   },
   "engines": {
     "node": ">=18.0.0"
