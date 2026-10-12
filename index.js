@@ -8,7 +8,6 @@ const client = new Client({
     ]
 });
 
-// الأيديات الخاصة بك
 const CHANNEL_ID = '1559095541986758696';
 const GUILD_ID = '1554195304629141625';
 
@@ -20,9 +19,8 @@ client.once('ready', async () => {
         if (!guild) return console.log("لم يتم العثور على السيرفر!");
 
         const channel = await guild.channels.fetch(CHANNEL_ID);
-        if (!channel || !channel.isVoiceBased()) return console.log("الروم الصوتية غير موجودة!");
+        if (!channel) return console.log("الروم الصوتية غير موجودة!");
 
-        // الاتصال بالروم مع وضع ديفن وميوت للبوت
         joinVoiceChannel({
             channelId: channel.id,
             guildId: guild.id,
@@ -31,10 +29,10 @@ client.once('ready', async () => {
             selfMute: true
         });
 
-        console.log(`تم دخول الروم الصوتية (${channel.name}) بحالة Deafen!`);
+        console.log(`تم دخول الروم الصوتية بنجاح!`);
     } catch (error) {
-        console.error("حدث خطأ أثناء الاتصال بالروم:", error);
+        console.error("خطأ أثناء الاتصال بالروم:", error);
     }
 });
 
-client.login(‏process.env.DISCORD_TOKEN);
+client.login(process.env.DISCORD_TOKEN);
