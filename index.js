@@ -1,5 +1,12 @@
 const { Client, GatewayIntentBits } = require('discord.js');
 const { joinVoiceChannel } = require('@discordjs/voice');
+const http = require('http');
+
+// إنشاء خادم بسيط لإبقاء البوت شغال 24/7
+http.createServer((req, res) => {
+    res.write("Bot is alive!");
+    res.end();
+}).listen(process.env.PORT || 3000);
 
 const client = new Client({
     intents: [
@@ -11,15 +18,13 @@ const client = new Client({
 const CHANNEL_ID = '1559095541986758696';
 const GUILD_ID = '1554195304629141625';
 
-client.once('ready', async () => {
-    console.log(`تم تسجيل الدخول بنجاح باسم: ${client.user.tag}`);
-
+function connectToVoice() {
     try {
-        const guild = await client.guilds.fetch(GUILD_ID);
-        if (!guild) return console.log("لم يتم العثور على السيرفر!");
+        const guild = client.guilds.cache.get(GUILD_ID);
+        if (!guild) return;
 
-        const channel = await guild.channels.fetch(CHANNEL_ID);
-        if (!channel) return console.log("الروم الصوتية غير موجودة!");
+        const channel = guild.channels.cache.get(CHANNEL_ID);
+        if (!channel) return;
 
         joinVoiceChannel({
             channelId: channel.id,
@@ -28,11 +33,18 @@ client.once('ready', async () => {
             selfDeaf: true,
             selfMute: true
         });
-
-        console.log(`تم دخول الروم الصوتية بنجاح!`);
+        console.log("تم الاتصال بالروم الصوتية بحالة Deafen!");
     } catch (error) {
-        console.error("خطأ أثناء الاتصال بالروم:", error);
+        console.error("خطأ في الاتصال:", error);
     }
+}
+
+client.once('ready', () => {
+    console.log(`تم تسجيل الدخول باسم: ${client.user.tag}`);
+    connectToVoice();
+    
+    // إعادة محاولة الاتصال كل 5 دقائق لضمان عدم الخروج
+    setInterval(connectToVoice, 300000);
 });
 
 client.login(process.env.DISCORD_TOKEN);
